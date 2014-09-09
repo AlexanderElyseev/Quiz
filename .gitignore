@@ -2,6 +2,8 @@
 
 # IDE
 *.iml
+Coursera/Algorithms/.idea
+Coursera/Algorithms/out
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -54,3 +56,4 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+
