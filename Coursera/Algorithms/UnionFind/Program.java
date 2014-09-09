@@ -4,27 +4,25 @@ import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-class Program
-{
+class Program {
     /**
      * Program main entry point.
      *
      * @param args Command line arguments.
      */
-	public static void main(String[] args) throws Exception {
-		if (args.length == 0)
-		{
-			System.out.println("Data file is not specified.");
-			return;
-		}
+    public static void main(String[] args) throws Exception {
+        if (args.length == 0) {
+            System.out.println("Data file is not specified.");
+            return;
+        }
 
-		String fileName = args[0];
-		System.out.println("Reading file \"" + fileName + "\"...");
+        String fileName = args[0];
+        System.out.println("Reading file \"" + fileName + "\"...");
 
         UnionFind uf = readInputFile(fileName);
 
         System.out.println("Data is loaded.");
-	}
+    }
 
     /**
      * Reads the file from specified path and build UnionFind structure.
@@ -33,6 +31,7 @@ class Program
      * Other lines are skipped.
      *
      * @param fileName The name of file with data.
+     *
      * @return UnionFind structure with data from the file.
      */
     private static UnionFind readInputFile(String fileName) throws IOException {
