@@ -19,9 +19,18 @@ class Program {
         String fileName = args[0];
         System.out.println("Reading file \"" + fileName + "\"...");
 
-        UnionFind uf = readInputFile(fileName);
+        IUnionFind uf = readInputFile(fileName);
 
         System.out.println("Data is loaded.");
+
+        if (uf.isConnected(1, 2))
+            System.out.println("(1, 2) : connected.");
+
+        if (uf.isConnected(2, 3))
+            System.out.println("(2, 3) : connected.");
+
+        if (uf.isConnected(5, 13))
+            System.out.println("(5, 13) : connected.");
     }
 
     /**
@@ -34,11 +43,16 @@ class Program {
      *
      * @return UnionFind structure with data from the file.
      */
-    private static UnionFind readInputFile(String fileName) throws IOException {
-        UnionFind uf = new UnionFind();
+    private static IUnionFind readInputFile(String fileName) throws IOException {
+        QuickFind uf;
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         try {
             String line = br.readLine();
+            if (line == null)
+                throw new UnsupportedOperationException("First line of data file have to contain size of set.");
+
+            uf = new QuickFind(Integer.parseInt(line));
+
             Pattern pattern = Pattern.compile("-?\\d+");
             int[] numbers = new int[2];
             while (line != null) {
