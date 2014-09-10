@@ -44,14 +44,15 @@ class Program {
      * @return UnionFind structure with data from the file.
      */
     private static IUnionFind readInputFile(String fileName) throws IOException {
-        QuickFind uf;
+        IUnionFind uf;
         BufferedReader br = new BufferedReader(new FileReader(fileName));
         try {
             String line = br.readLine();
             if (line == null)
                 throw new UnsupportedOperationException("First line of data file have to contain size of set.");
 
-            uf = new QuickFind(Integer.parseInt(line));
+            int itemsCount = Integer.parseInt(line);
+            uf = new QuickUnion(itemsCount);
 
             Pattern pattern = Pattern.compile("-?\\d+");
             int[] numbers = new int[2];
