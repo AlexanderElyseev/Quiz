@@ -92,6 +92,7 @@ public class PercolationCalculator {
      * Builds UnionFind data structure by the name.
      *
      * @param name The name of data structure.
+     *
      * @return Appropriate UnionFind data structure.
      */
     private static IUnionFind buildDataStructure(String name) {
