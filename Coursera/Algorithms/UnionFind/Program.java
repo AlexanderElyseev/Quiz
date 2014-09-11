@@ -31,6 +31,27 @@ class Program {
 
         if (uf.isConnected(5, 13))
             System.out.println("(5, 13) : connected.");
+
+        IUnionFind uf1 = new WeighedQuickUnion(10, true);
+        System.out.println(uf1.toString());
+        uf1.union(4, 3);
+        System.out.println(uf1.toString());
+        uf1.union(3, 8);
+        System.out.println(uf1.toString());
+        uf1.union(6, 5);
+        System.out.println(uf1.toString());
+        uf1.union(9, 4);
+        System.out.println(uf1.toString());
+        uf1.union(2, 1);
+        System.out.println(uf1.toString());
+        uf1.union(5, 0);
+        System.out.println(uf1.toString());
+        uf1.union(7, 2);
+        System.out.println(uf1.toString());
+        uf1.union(6, 1);
+        System.out.println(uf1.toString());
+        uf1.union(7, 3);
+        System.out.println(uf1.toString());
     }
 
     /**
@@ -52,7 +73,7 @@ class Program {
                 throw new UnsupportedOperationException("First line of data file have to contain size of set.");
 
             int itemsCount = Integer.parseInt(line);
-            uf = new QuickUnion(itemsCount);
+            uf = new WeighedQuickUnion(itemsCount, true);
 
             Pattern pattern = Pattern.compile("-?\\d+");
             int[] numbers = new int[2];
