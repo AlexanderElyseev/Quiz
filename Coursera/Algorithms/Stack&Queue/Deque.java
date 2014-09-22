@@ -1,18 +1,15 @@
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Deque<T> {
     private class Wrapper {
         T item;
         Wrapper next;
         Wrapper previous;
-
-        @Override
-        public String toString() {
-            return item.toString();
-        }
     }
 
     private Wrapper head;
+
     private Wrapper tail;
 
     private int size = 0;
@@ -57,6 +54,7 @@ public class Deque<T> {
         newTail.item = item;
         newTail.next = oldTail;
         newTail.previous = null;
+
         tail = newTail;
 
         if (oldTail != null)
@@ -71,13 +69,17 @@ public class Deque<T> {
 
     public T removeFirst() {
         if (size == 0)
-            throw new UnsupportedOperationException();
+            throw new NoSuchElementException();
 
         T result = head.item;
+
+        // Previous item from head become head.
         head = head.previous;
+        if (head != null)
+            head.next = null;
 
+        // If it was the last item, than tail === head === null.
         size--;
-
         if (size == 0)
             tail = null;
 
@@ -86,13 +88,17 @@ public class Deque<T> {
 
     public T removeLast() {
         if (size == 0)
-            throw new UnsupportedOperationException();
+            throw new NoSuchElementException();
 
         T result = tail.item;
+
+        // Next item from tail become new tail.
         tail = tail.next;
+        if (tail != null)
+            tail.previous = null;
 
+        // If it was the last item, than tail === head === null.
         size--;
-
         if (size == 0)
             head = null;
 
@@ -110,6 +116,9 @@ public class Deque<T> {
 
             @Override
             public T next() {
+                if (current == null)
+                    throw new NoSuchElementException();
+
                 T val = current.item;
                 current = current.next;
                 return val;

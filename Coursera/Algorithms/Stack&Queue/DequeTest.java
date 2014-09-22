@@ -2,6 +2,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class DequeTest {
     @Test
@@ -26,6 +27,23 @@ public class DequeTest {
 
         deque.removeFirst();
         Assert.assertEquals(0, deque.size());
+    }
+
+    @Test
+    public void testAddNullException() {
+        try {
+            new Deque<Integer>().addFirst(null);
+        } catch (NullPointerException ignored) {
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        try {
+            new Deque<Integer>().addLast(null);
+        } catch (NullPointerException ignored) {
+        } catch (Exception e) {
+            Assert.fail();
+        }
     }
 
     @Test
@@ -124,6 +142,43 @@ public class DequeTest {
     }
 
     @Test
+    public void testRemoveFromEmptyException() {
+        try {
+            new Deque<Integer>().removeFirst();
+        } catch (NoSuchElementException ignored) {
+        } catch (Exception e) {
+            Assert.fail();
+        }
+
+        try {
+            new Deque<Integer>().removeLast();
+        } catch (NoSuchElementException ignored) {
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testRemoveFromIteratorException() {
+        try {
+            new Deque<Integer>().iterator().remove();
+        } catch (UnsupportedOperationException ignored) {
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testNoNextIteratorException() {
+        try {
+            new Deque<Integer>().iterator().next();
+        } catch (NoSuchElementException ignored) {
+        } catch (Exception e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
     public void testIterator() {
         Deque<Integer> deque = new Deque<Integer>();
         deque.addLast(1);
@@ -141,5 +196,30 @@ public class DequeTest {
         Assert.assertTrue(iterator.hasNext());
         Assert.assertEquals(3, iterator.next().intValue());
         Assert.assertFalse(iterator.hasNext());
+    }
+
+    @Test
+    public void testIteratorCompleteness() {
+        testIteratorCompleteness(1);
+        testIteratorCompleteness(2);
+        testIteratorCompleteness(3);
+        testIteratorCompleteness(4);
+        testIteratorCompleteness(10);
+        testIteratorCompleteness(20);
+        testIteratorCompleteness(100);
+    }
+
+    private void testIteratorCompleteness(int n) {
+        Deque<Integer> queue = new Deque<Integer>();
+        boolean[] items = new boolean[n];
+        for (int i = 0; i < n; i++)
+            queue.addFirst(i);
+
+        Iterator<Integer> it = queue.iterator();
+        while (it.hasNext())
+            items[it.next()] = true;
+
+        for (int i = 0; i < n; i++)
+            Assert.assertTrue(items[i]);
     }
 }
