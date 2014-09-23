@@ -1,9 +1,9 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class Deque<T> {
+public class Deque<Item> implements Iterable<Item> {
     private class Wrapper {
-        T item;
+        Item item;
         Wrapper next;
         Wrapper previous;
     }
@@ -14,7 +14,7 @@ public class Deque<T> {
 
     private int size = 0;
 
-    boolean isEmpty() {
+    public boolean isEmpty() {
         return size == 0;
     }
 
@@ -22,7 +22,7 @@ public class Deque<T> {
         return size;
     }
 
-    public void addFirst(T item) {
+    public void addFirst(Item item) {
         if (item == null)
             throw new NullPointerException();
 
@@ -44,7 +44,7 @@ public class Deque<T> {
         size++;
     }
 
-    public void addLast(T item) {
+    public void addLast(Item item) {
         if (item == null)
             throw new NullPointerException();
 
@@ -67,11 +67,11 @@ public class Deque<T> {
         size++;
     }
 
-    public T removeFirst() {
+    public Item removeFirst() {
         if (size == 0)
             throw new NoSuchElementException();
 
-        T result = head.item;
+        Item result = head.item;
 
         // Previous item from head become head.
         head = head.previous;
@@ -86,11 +86,11 @@ public class Deque<T> {
         return result;
     }
 
-    public T removeLast() {
+    public Item removeLast() {
         if (size == 0)
             throw new NoSuchElementException();
 
-        T result = tail.item;
+        Item result = tail.item;
 
         // Next item from tail become new tail.
         tail = tail.next;
@@ -105,8 +105,8 @@ public class Deque<T> {
         return result;
     }
 
-    public Iterator<T> iterator() {
-        return new Iterator<T>() {
+    public Iterator<Item> iterator() {
+        return new Iterator<Item>() {
             private Wrapper current = tail;
 
             @Override
@@ -115,11 +115,11 @@ public class Deque<T> {
             }
 
             @Override
-            public T next() {
+            public Item next() {
                 if (current == null)
                     throw new NoSuchElementException();
 
-                T val = current.item;
+                Item val = current.item;
                 current = current.next;
                 return val;
             }

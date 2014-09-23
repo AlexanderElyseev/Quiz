@@ -1,9 +1,9 @@
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class RandomizedQueue<T> {
+public class RandomizedQueue<Item> implements Iterable<Item> {
     private class Wrapper {
-        T item;
+        Item item;
         Wrapper next;
         Wrapper previous;
     }
@@ -20,7 +20,7 @@ public class RandomizedQueue<T> {
         return size;
     }
 
-    public void enqueue(T item) {
+    public void enqueue(Item item) {
         if (item == null)
             throw new NullPointerException();
 
@@ -59,7 +59,7 @@ public class RandomizedQueue<T> {
         size++;
     }
 
-    public T dequeue() {
+    public Item dequeue() {
         if (size == 0)
             throw new NoSuchElementException();
 
@@ -91,7 +91,7 @@ public class RandomizedQueue<T> {
         return current.item;
     }
 
-    public T sample() {
+    public Item sample() {
         if (size == 0)
             throw new NoSuchElementException();
 
@@ -105,9 +105,9 @@ public class RandomizedQueue<T> {
         return current.item;
     }
 
-    private T[] shuffle() {
+    private Item[] shuffle() {
         @SuppressWarnings("unchecked")
-        T[] data = (T[])new Object[size];
+        Item[] data = (Item[])new Object[size];
 
         int index = 0;
         Wrapper current = tail;
@@ -118,7 +118,7 @@ public class RandomizedQueue<T> {
 
         for (int i = 1; i < size; i++) {
             int rnd = StdRandom.uniform(i);
-            T tmp = data[rnd];
+            Item tmp = data[rnd];
             data[rnd] = data[i];
             data[i] = tmp;
         }
@@ -126,9 +126,9 @@ public class RandomizedQueue<T> {
         return data;
     }
 
-    public Iterator<T> iterator() {
-        return new Iterator<T>() {
-            private T[] data = shuffle();
+    public Iterator<Item> iterator() {
+        return new Iterator<Item>() {
+            private Item[] data = shuffle();
             private int index = 0;
 
             @Override
@@ -137,7 +137,7 @@ public class RandomizedQueue<T> {
             }
 
             @Override
-            public T next() {
+            public Item next() {
                 if (index == data.length)
                     throw new NoSuchElementException();
 
