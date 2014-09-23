@@ -168,4 +168,35 @@ public class RandomizedQueueTest {
 
         Assert.assertTrue(random);
     }
+
+    @Test
+    public void testIteratorUniformRandomness() {
+        testIteratorUniformRandomness(1);
+        testIteratorUniformRandomness(2);
+        testIteratorUniformRandomness(3);
+        testIteratorUniformRandomness(10);
+        testIteratorUniformRandomness(100);
+    }
+
+    public void testIteratorUniformRandomness(int p) {
+        int[] data = new int[p];
+        for (int n = 0; n < 1000; n++) {
+            RandomizedQueue<Integer> queue = new RandomizedQueue<Integer>();
+            for (int i = 0; i < p; i++)
+                queue.enqueue(i);
+
+            int count = 0;
+            for (int i : queue) {
+                if (i == p - 1)
+                    break;
+
+                count++;
+            }
+
+            data[count]++;
+        }
+
+        for (int i = 0; i < p; i++)
+            Assert.assertTrue(data[i] != 0);
+    }
 }

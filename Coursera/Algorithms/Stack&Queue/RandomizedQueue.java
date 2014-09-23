@@ -33,9 +33,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
             head = tail = first;
         } else {
-            // New item before (doesn't matter) random item.
-            // TODO: needless random here?
-            int index = StdRandom.uniform(size);
+            // Inserting new element in fixed position.
+            // Inserting in random position bring us not-uniform random iterator.
+            int index = 0;//StdRandom.uniform(size);
 
             Wrapper current = tail;
             while (--index >= 0) {
@@ -117,7 +117,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
 
         for (int i = 1; i < size; i++) {
-            int rnd = StdRandom.uniform(i);
+            int rnd = StdRandom.uniform(i + 1);
             Item tmp = data[rnd];
             data[rnd] = data[i];
             data[i] = tmp;
