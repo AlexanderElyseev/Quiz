@@ -120,9 +120,8 @@ public class RandomizedQueueTest {
         for (int i = 0; i < n; i++)
             queue.enqueue(i);
 
-        Iterator<Integer> it = queue.iterator();
-        while (it.hasNext())
-            items[it.next()] = true;
+        for (Integer item : queue)
+            items[item] = true;
 
         for (int i = 0; i < n; i++)
             Assert.assertTrue(items[i]);

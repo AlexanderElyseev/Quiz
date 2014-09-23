@@ -107,7 +107,7 @@ public class Deque<Item> implements Iterable<Item> {
 
     public Iterator<Item> iterator() {
         return new Iterator<Item>() {
-            private Wrapper current = tail;
+            private Wrapper current = head;
 
             @Override
             public boolean hasNext() {
@@ -120,7 +120,7 @@ public class Deque<Item> implements Iterable<Item> {
                     throw new NoSuchElementException();
 
                 Item val = current.item;
-                current = current.next;
+                current = current.previous;
                 return val;
             }
 

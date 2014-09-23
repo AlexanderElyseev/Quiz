@@ -186,16 +186,39 @@ public class DequeTest {
         deque.addFirst(3);
         deque.addLast(4);
 
-        Iterator<Integer> iterator = deque.iterator();
-        Assert.assertTrue(iterator.hasNext());
-        Assert.assertEquals(4, iterator.next().intValue());
-        Assert.assertTrue(iterator.hasNext());
-        Assert.assertEquals(1, iterator.next().intValue());
-        Assert.assertTrue(iterator.hasNext());
-        Assert.assertEquals(2, iterator.next().intValue());
-        Assert.assertTrue(iterator.hasNext());
-        Assert.assertEquals(3, iterator.next().intValue());
-        Assert.assertFalse(iterator.hasNext());
+        // from top to head
+        Iterator<Integer> it = deque.iterator();
+        Assert.assertTrue(it.hasNext());
+        Assert.assertEquals(3, it.next().intValue());
+        Assert.assertTrue(it.hasNext());
+        Assert.assertEquals(2, it.next().intValue());
+        Assert.assertTrue(it.hasNext());
+        Assert.assertEquals(1, it.next().intValue());
+        Assert.assertTrue(it.hasNext());
+        Assert.assertEquals(4, it.next().intValue());
+        Assert.assertFalse(it.hasNext());
+
+        // first only
+        deque = new Deque<Integer>();
+        for (int i = 0; i < 1000; i++)
+            deque.addFirst(i);
+
+        it = deque.iterator();
+        for (int i = 999; i >= 0; i--)
+            Assert.assertEquals(i, it.next().intValue());
+
+        Assert.assertFalse(it.hasNext());
+
+        // last only
+        deque = new Deque<Integer>();
+        for (int i = 0; i < 1000; i++)
+            deque.addLast(i);
+
+        it = deque.iterator();
+        for (int i = 0; i < 1000; i++)
+            Assert.assertEquals(i, it.next().intValue());
+
+        Assert.assertFalse(it.hasNext());
     }
 
     @Test
@@ -215,9 +238,8 @@ public class DequeTest {
         for (int i = 0; i < n; i++)
             queue.addFirst(i);
 
-        Iterator<Integer> it = queue.iterator();
-        while (it.hasNext())
-            items[it.next()] = true;
+        for (Integer item  : queue)
+            items[item] = true;
 
         for (int i = 0; i < n; i++)
             Assert.assertTrue(items[i]);
