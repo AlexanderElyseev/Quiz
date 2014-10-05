@@ -1,19 +1,26 @@
 import java.util.Comparator;
 
+/**
+ * Class of 2D point.
+ */
 public class Point implements Comparable<Point> {
-    public static final Comparator<Point> SLOPE_ORDER = new Comparator<Point>() {
+    /**
+     * Comparator for points be slope to specified point.
+     */
+    private static class SlopeComparator implements Comparator<Point> {
+        private final Point p;
+
+        public SlopeComparator(Point p) {
+            this.p = p;
+        }
+
         @Override
         public int compare(Point p1, Point p2) {
-            double slope12 = p1.slopeTo(p2);
-            double slope21 = p2.slopeTo(p2);
-            if (slope12 < slope21)
-                return -1;
-            else if (slope12 > slope12)
-                return +1;
-
-            return 0;
+            return Double.compare(p.slopeTo(p1), p.slopeTo(p2));
         }
-    };
+    }
+
+    public final Comparator<Point> SLOPE_ORDER = new SlopeComparator(this);
 
     private final int x;
 
@@ -62,6 +69,6 @@ public class Point implements Comparable<Point> {
         if (that.x == x)
             return Double.POSITIVE_INFINITY;
 
-        return (that.y - y) / (that.x - x);
+        return ((double)that.y - y) / (that.x - x);
     }
 }

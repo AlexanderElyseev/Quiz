@@ -2,16 +2,28 @@ import java.util.Arrays;
 
 public class Brute {
     public static void main(String[] args) {
-        int count = StdIn.readInt();
+        StdDraw.setXscale(0, 32768);
+        StdDraw.setYscale(0, 32768);
+
+        String filename = args[0];
+        In in = new In(filename);
+
+        int count = in.readInt();
         Point[] points = new Point[count];
 
-        while (--count >= 0) {
-            int x = Integer.parseInt(StdIn.readString());
-            int y = Integer.parseInt(StdIn.readString());
+        int index = 0;
+        while (index != count) {
+            int x = in.readInt();
+            int y = in.readInt();
 
-            points[count] = new Point(x, y);
+            Point point = new Point(x, y);
+            points[index++] = point;
+
+            point.draw();
         }
 
+        // Checking each 4 points.
+        Arrays.sort(points);
         for (int i = 0; i < count; i++) {
             for (int j = i + 1; j < count; j++) {
                 for (int k = j + 1; k < count; k++) {
@@ -23,26 +35,35 @@ public class Brute {
         }
     }
 
-    static void printIfCollinear(Point[] points) {
+    private static void printIfCollinear(Point[] points) {
         int n = points.length;
 
-        for (int i = 0; i < n - 2; i++) {
-            if (points[i].slopeTo(points[i + 1]) != points[i + 1].slopeTo(points[i + 2])) {
+        assert n >= 3;
+
+        // Comparing slopes.
+        Point base = points[0];
+        Point target = points[1];
+        double slope = base.slopeTo(target);
+
+        int i = 2;
+        do {
+            target = points[i];
+            if (base.slopeTo(target) != slope)
                 return;
-            }
-        }
 
-        if (points[n - 2].slopeTo(points[n - 1]) != points[n - 1].slopeTo(points[0])) {
-            return;
-        }
+        } while (++i < n);
 
+        // Printing output.
         Arrays.sort(points);
-        for (int i = 0; i < n; i++) {
+        for (i = 0; i < n; i++) {
             if (i != n - 1) {
                 StdOut.print(points[i] + " -> ");
             } else {
                 StdOut.println(points[i]);
             }
         }
+
+        // Drawing output.
+        points[0].drawTo(points[n - 1]);
     }
 }

@@ -47,5 +47,27 @@ public class PointTest {
         Point p8 = new Point(2, 2);
         Assert.assertEquals(p8.slopeTo(p7), p7.slopeTo(p8));
         Assert.assertEquals(1.0, p7.slopeTo(p8));
+
+        Point p9 = new Point(64, 11);
+        Point p10 = new Point(371, 70);
+        Assert.assertEquals(0.19218241042345277, p9.slopeTo(p10));
+    }
+
+    @Test
+    public void testSlopeOrderComparator() {
+        Point p = new Point(2, 230);
+        Point q = new Point(356, 341);
+        Point r = new Point(251, 375);
+        Assert.assertEquals(-1, p.SLOPE_ORDER.compare(q, r));
+
+        p = new Point(26054, 29224);
+        q = new Point(5599, 3145);
+        r = new Point(1032, 3871);
+        Assert.assertEquals(1, p.SLOPE_ORDER.compare(q, r));
+
+        p = new Point(7, 9);
+        q = new Point(1, 7);
+        r = new Point(1, 6);
+        Assert.assertEquals(-1, p.SLOPE_ORDER.compare(q, r));
     }
 }
