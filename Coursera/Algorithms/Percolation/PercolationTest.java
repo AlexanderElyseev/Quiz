@@ -30,7 +30,9 @@ public class PercolationTest {
      */
     @Test
     public void testOpen() {
-
+        Percolation percolation = new Percolation(1);
+        percolation.open(1, 1);
+        percolation.open(1, 1);
     }
 
     /**
@@ -85,13 +87,34 @@ public class PercolationTest {
 
         percolation.open(1, 1);
         Assert.assertTrue(percolation.isFull(1, 1));
+
+        percolation.open(2, 2);
+        Assert.assertFalse(percolation.isFull(2, 2));
+
+        percolation.open(1, 2);
+        Assert.assertTrue(percolation.isFull(2, 2));
     }
 
     /**
-     * Test for percolate status.
+     * Test for 1x1 grid.
+     * Initial grid doesn't percolate.
+     * Percolates after opening the first (single) element.
      */
     @Test
-    public void testPercolates() {
+    public void testPercolates1() {
+        Percolation percolation = new Percolation(1);
+        Assert.assertFalse(percolation.percolates());
+
+        percolation.open(1, 1);
+        Assert.assertTrue(percolation.percolates());
+    }
+
+    /**
+     * Test for 2x2 grid.
+     * Initial grid doesn't percolate.
+     */
+    @Test
+    public void testPercolates2() {
         Percolation percolation = new Percolation(2);
         Assert.assertFalse(percolation.percolates());
 
@@ -103,5 +126,45 @@ public class PercolationTest {
 
         percolation.open(1, 2);
         Assert.assertTrue(percolation.percolates());
+    }
+
+    /**
+     * Test for 3x3 grid.
+     */
+    @Test
+    public void testPercolates3() {
+        Percolation percolation = new Percolation(3);
+        Assert.assertFalse(percolation.percolates());
+
+        percolation.open(1, 1);
+        Assert.assertFalse(percolation.percolates());
+
+        percolation.open(2, 2);
+        Assert.assertFalse(percolation.percolates());
+
+        percolation.open(3, 3);
+        Assert.assertFalse(percolation.percolates());
+
+        percolation.open(2, 1);
+        Assert.assertFalse(percolation.percolates());
+
+        percolation.open(2, 3);
+        Assert.assertTrue(percolation.percolates());
+    }
+
+    /**
+     * Test for 3x3 grid.
+     */
+    @Test
+    public void testBackWash() {
+        Percolation percolation = new Percolation(3);
+        percolation.open(1, 3);
+        percolation.open(2, 3);
+        percolation.open(3, 3);
+        Assert.assertTrue(percolation.percolates());
+        Assert.assertFalse(percolation.isFull(3, 1));
+
+        percolation.open(3, 1);
+        Assert.assertFalse(percolation.isFull(3, 1));
     }
 }

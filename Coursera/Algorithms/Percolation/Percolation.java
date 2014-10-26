@@ -1,3 +1,8 @@
+/**
+ * Class for solving percolation problem.
+ *
+ * http://en.wikipedia.org/wiki/Percolation_theory
+ */
 public class Percolation {
     /**
      * Grid with sites.
@@ -5,9 +10,25 @@ public class Percolation {
     private final boolean[][] sites;
 
     /**
-     * UnionFind data structure.
+     * UnionFind data structure with "backwash" problem.
+     *
+     * Contains n*n + 2*n + 2 elements:
+     * -> n * n - sites grid;
+     * -> 2n    - imaginary sides;
+     * -> 2     - imaginary top and bottom;
      */
-    private final WeightedQuickUnionUF UF;
+    private final WeightedQuickUnionUF unionFindDataWithBackWash;
+
+    /**
+     * UnionFind data structure without "backwash" problem.
+     * Not connected to the bottom element.
+     *
+     * Contains n*n + 2*n + 2 elements:
+     * -> n * n - sites grid;
+     * -> 2n    - imaginary sides;
+     * -> 1     - imaginary bottom;
+     */
+    private final WeightedQuickUnionUF unionFindDataWithoutBackWash;
 
     /**
      * Count of sites in one side.
@@ -36,17 +57,20 @@ public class Percolation {
 
         N = n;
         sites = new boolean[n][n];
-        UF = new WeightedQuickUnionUF(n * n + 2);
+        unionFindDataWithBackWash = new WeightedQuickUnionUF(n * n + 2 * n + 2);
+        unionFindDataWithoutBackWash = new WeightedQuickUnionUF(n * n + 2 * n + 2);
 
         // Connect top and bottom sides with imagine elements.
-        TOP_IMAGINE_ELEMENT_INDEX = n * n;
-        for (int j = 0; j < n; j++) {
-            UF.union(j, TOP_IMAGINE_ELEMENT_INDEX);
-        }
-
+        TOP_IMAGINE_ELEMENT_INDEX = n * n + 2 * n;
         BOTTOM_IMAGINE_ELEMENT_INDEX = TOP_IMAGINE_ELEMENT_INDEX + 1;
         for (int j = 0; j < n; j++) {
-            UF.union((n - 1) * n + j, BOTTOM_IMAGINE_ELEMENT_INDEX);
+            int imaginaryTopIndex = n * n + j;
+            int imaginaryBottomIndex = n * n + n + j;
+
+            unionFindDataWithBackWash.union(imaginaryTopIndex, TOP_IMAGINE_ELEMENT_INDEX);
+            unionFindDataWithBackWash.union(imaginaryBottomIndex, BOTTOM_IMAGINE_ELEMENT_INDEX);
+
+            unionFindDataWithoutBackWash.union(imaginaryTopIndex, TOP_IMAGINE_ELEMENT_INDEX);
         }
     }
 
@@ -67,25 +91,48 @@ public class Percolation {
         sites[realI][realJ] = true;
 
         // Connect with neighbour open sites.
-        int index = realI * N + realJ;
-        if (realI != 0 && sites[realI - 1][realJ])
-            UF.union((realI - 1) * N + realJ, index);
+        int index = index(realI, realJ);
+        if (realI != 0 && sites[realI - 1][realJ]) {
+            unionFindDataWithBackWash.union(index(realI - 1, realJ), index);
+            unionFindDataWithoutBackWash.union(index(realI - 1, realJ), index);
+        }
 
-        if (realI + 1 != N && sites[realI + 1][realJ])
-            UF.union((realI + 1) * N + realJ, index);
+        if (realI + 1 != N && sites[realI + 1][realJ]) {
+            unionFindDataWithBackWash.union(index(realI + 1, realJ), index);
+            unionFindDataWithoutBackWash.union(index(realI + 1, realJ), index);
+        }
 
-        if (realJ != 0 && sites[realI][realJ - 1])
-            UF.union(index - 1, index);
+        if (realJ != 0 && sites[realI][realJ - 1]) {
+            unionFindDataWithBackWash.union(index - 1, index);
+            unionFindDataWithoutBackWash.union(index - 1, index);
+        }
 
-        if (realJ + 1 != N && sites[realI][realJ + 1])
-            UF.union(index + 1, index);
+        if (realJ + 1 != N && sites[realI][realJ + 1]) {
+            unionFindDataWithBackWash.union(index + 1, index);
+            unionFindDataWithoutBackWash.union(index + 1, index);
+        }
 
         // Connect with top side or bottom side.
-        if (realI == 0)
-            UF.union(TOP_IMAGINE_ELEMENT_INDEX, index);
+        if (realI == 0) {
+            unionFindDataWithBackWash.union(TOP_IMAGINE_ELEMENT_INDEX, index);
+            unionFindDataWithoutBackWash.union(TOP_IMAGINE_ELEMENT_INDEX, index);
+        }
 
-        if (realI == N - 1)
-            UF.union(BOTTOM_IMAGINE_ELEMENT_INDEX, index);
+        if (realI == N - 1) {
+            unionFindDataWithBackWash.union(BOTTOM_IMAGINE_ELEMENT_INDEX, index);
+        }
+    }
+
+    /**
+     * Gets the index of the specified element in the union-find structure.
+     *
+     * @param realI Row index of the site (0 <= i < N).
+     * @param realJ Column index of the site (0 <= j < N).
+     *
+     * @return The index of the element in the union-find structure.
+     */
+    private int index(int realI, int realJ) {
+        return realI * N + realJ;
     }
 
     /**
@@ -103,7 +150,7 @@ public class Percolation {
     }
 
     /**
-     * Is site (row i, column j) full (open and connected with top side)?
+     * Is site (row i, column j) full (open and connected with top side).
      *
      * @param i Row index of the site (1 <= i <= N).
      * @param j Column index of the site (1 <= j <= N).
@@ -115,7 +162,7 @@ public class Percolation {
         int realI = i - 1;
         int realJ = j - 1;
 
-        return sites[realI][realJ] && UF.connected(TOP_IMAGINE_ELEMENT_INDEX, N * realI + realJ);
+        return sites[realI][realJ] && unionFindDataWithoutBackWash.connected(TOP_IMAGINE_ELEMENT_INDEX, index(realI, realJ));
     }
 
     /**
@@ -124,7 +171,7 @@ public class Percolation {
      * @return True if the system percolates.
      */
     public boolean percolates() {
-        return UF.connected(TOP_IMAGINE_ELEMENT_INDEX, BOTTOM_IMAGINE_ELEMENT_INDEX);
+        return unionFindDataWithBackWash.connected(TOP_IMAGINE_ELEMENT_INDEX, BOTTOM_IMAGINE_ELEMENT_INDEX);
     }
 
     /**
